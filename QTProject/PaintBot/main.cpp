@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "myserver.h"
+#include "server.h"
 
 
 

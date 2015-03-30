@@ -54,8 +54,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-//! [1]
-//! [2]
+    //! [1]
+        RobotServer* serv = new RobotServer(parent);
+    //! [2]
+        QTcpSocket* samplesoc = new QTcpSocket(parent);
+        cout<<"Attempted to connect\n";
+        cout.flush();
+        samplesoc->connectToHost("0.0.0.0", 50000);
+        cout<<"Past Connect\n";
+        cout.flush();
+        // view.show();
 
 
     // view.show();
