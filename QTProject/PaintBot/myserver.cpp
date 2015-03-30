@@ -28,7 +28,7 @@ void MyServer::newConnection()
     socket->write("hello bitch\r\n");
     socket->flush();
 
-    socket->waitForBytesWritten(4000);
+    socket->waitForBytesWritten(3000);
 
     socket->close();
 
