@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+
 #include <QtNetwork/qtcpserver.h>
 #include <QtNetwork/qtcpsocket.h>
 #include <QDialog>
@@ -16,29 +17,39 @@ private:
 public:
     RobotServer(QObject* init){
 
-        mainserver = new QTcpServer(init);
-        QObject::connect(mainserver, SIGNAL(handler()), this, SLOT(handler()));
-        if(!mainserver->listen(QHostAddress::Any, 50000)){
-            flush("Server crashed\n");
+       mainserver = new QTcpServer(this);
+       QObject::connect(mainserver, SIGNAL(RobotServer::handler()), this, SLOT(RobotServer::handler()));
+       if(!mainserver->listen(QHostAddress::Any, 50000)){
+            cout<<"Server crashed\n"<<endl;
+            cout.flush();
         }
         else {
-            flush("Server started\n");
+            unsigned short portnum =  mainserver->serverPort();
+            cout<<"Portnum: "<<portnum<<endl;
+            cout<<"Server started at: "<<mainserver->serverAddress().toString().toStdString()<<endl;
+            cout<<"Is listening: "<<mainserver->isListening()<<endl;
+            cout.flush();
         }
     }
     void handler(){
 
         QTcpSocket* soc = mainserver->nextPendingConnection();
+        //QObject::connect(soc,SIGNAL(disconnected()), soc, SLOT(deleteLater()));
         QByteArray input;
-        while(soc->canReadLine()){
-            input = soc->readAll();
-            if(input == "Code:0"){
+        soc->write("Hello!\r\n");
+        soc->flush();
+        soc->waitForBytesWritten(3000);
+        //while(soc->canReadLine()){
+        //input = soc->readAll();
+        //    if(input == "Code:0"){
 
-            }
-            else{
-                soc->close();
-                cout<<"Server shutdown\n";
-            }
-        }
+        //    }
+        //    else{
+        soc->close();
+        cout<<"Server shutdown\n";
+        cout.flush();
+         //   }
+        // }
     }
 };
 

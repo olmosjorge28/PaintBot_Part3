@@ -4,8 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-QT       += network
+QT += network core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     robot.cpp \
-    coloritem.cpp \
-    myserver.cpp
+    coloritem.cpp
 
 HEADERS  += mainwindow.h \
     robot.h \
     coloritem.h \
-    myserver.h
+    server.h
 
 FORMS    += mainwindow.ui
+
+QT += network
+

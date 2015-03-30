@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "server.h"
 #include <math.h>
 #include <iostream>
+#include <QtNetwork/qtcpserver.h>
+#include <QtNetwork/qtcpsocket.h>
 #define PI 3.14159265
 
 using namespace std;
@@ -55,14 +58,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //! [1]
-        RobotServer* serv = new RobotServer(parent);
+
     //! [2]
-        QTcpSocket* samplesoc = new QTcpSocket(parent);
-        cout<<"Attempted to connect\n";
-        cout.flush();
-        samplesoc->connectToHost("0.0.0.0", 50000);
-        cout<<"Past Connect\n";
-        cout.flush();
+        // QTcpSocket* samplesoc = new QTcpSocket(parent);
         // view.show();
 
 
