@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <stdio.h>
 #include <math.h>
 #include <iostream>
+#include <qthread.h>
 #define PI 3.14159265
 
 using namespace std;
@@ -20,8 +22,8 @@ protected:
 };
 
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent, MyServer* s, SocketClient* c) :
+    QMainWindow(parent), server(s), client(c),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -52,8 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }*/
 
 
-
-
 //! [1]
 //! [2]
 
@@ -62,24 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-int i = 5;
-
-void MainWindow::paintEvent(QPaintEvent *event)
-{
-    //QPainter painter(this);
-    //painter.setPen(Qt::green);
-    //painter.setBrush(Qt::green);
-   // painter.drawRect(10,10,100,100);
-
-}
-
-void MainWindow::on_pushButton_clicked()
-{
+volatile int MainWindow::link1_rotate_left(){
     int rot = 0;
    ui->graphicsView->scene()->removeItem(robot);
     rot = robot->torsoItem->rotation();
@@ -90,11 +73,9 @@ void MainWindow::on_pushButton_clicked()
     scene->addItem(robot);
     //ui->graphicsView->setScene(scene);
     //ui->graphicsView->updateGeometry();
+    return 1;
 }
-
-
-void MainWindow::on_pushButton_2_clicked()
-{
+void MainWindow::link1_rotate_right(){
     int rot = 0;
     cout<<"right 1: "<< robot->torsoItem->rotation() << endl;
 
@@ -103,9 +84,7 @@ void MainWindow::on_pushButton_2_clicked()
     //scene->addItem(robot);
     ui->graphicsView->setScene(scene);
 }
-
-void MainWindow::on_pushButton_3_clicked()
-{
+void MainWindow::link2_rotate_left(){
     int rot = 0;
     rot = robot->torsoItem2->rotation();
     cout<<"left 2"<<robot->torsoItem2->rotation()<<endl;
@@ -113,9 +92,7 @@ void MainWindow::on_pushButton_3_clicked()
     //scene->addItem(robot);
     ui->graphicsView->setScene(scene);
 }
-
-void MainWindow::on_pushButton_5_clicked()
-{
+void MainWindow::link2_rotate_right(){
     int rot = 0;
     rot = robot->torsoItem2->rotation();
     cout<<"right 2"<<robot->torsoItem2->rotation()<<endl;
@@ -123,9 +100,7 @@ void MainWindow::on_pushButton_5_clicked()
     //scene->addItem(robot);
     ui->graphicsView->setScene(scene);
 }
-
-void MainWindow::on_pushButton_4_clicked()
-{
+void MainWindow::link3_rotate_left(){
     int rot = 0;
     rot = robot->torsoItem3->rotation();
     cout<<"left 3"<<robot->torsoItem3->rotation()<<endl;
@@ -136,10 +111,7 @@ void MainWindow::on_pushButton_4_clicked()
     //scene->addItem(robot);
     ui->graphicsView->setScene(scene);
 }
-
-void MainWindow::on_pushButton_6_clicked()
-{
-    const QPen & pen = QPen(Qt::black);
+void MainWindow::link3_rotate_right(){
 
     int rot = 0;
     // auto pos1x=robot->Link3->pos().x() + 20;
@@ -156,28 +128,7 @@ void MainWindow::on_pushButton_6_clicked()
    // i = i +5;
 }
 
-void MainWindow::on_pushButton_7_clicked()
-{
-    const QBrush &brush = QBrush(Qt::SolidPattern);
-    QGraphicsItemGroup *group = new QGraphicsItemGroup(0);
-    QGraphicsItem* parent=robot->Link3;
-
-    //double len = pow((long double)robot->Link3->pos().x(), 2) + pow((long double)robot->Link3->pos().y(), 2);
-    //len = sqrt(len);
-    //int x1= cos(len);
-    //int y1= sin(len);
-    auto pos1x=robot->Link3->pos().x()+40;
-    auto pos1y=robot->Link3->pos().y();
-    QGraphicsEllipseItem* test = new QGraphicsEllipseItem(pos1x,pos1y,10,10,parent);
-    test->setBrush(brush);
-    group->addToGroup(test);
-    scene->addItem(group);
-    //scene->addEllipse(pos1x,pos1y,10,10, pen, brush);
-    ui->graphicsView->setScene(scene);
-}
-
-void MainWindow::on_pushButton_8_clicked()
-{
+void MainWindow::minus_x(){
 
     double Link1y = LINK1*sin(robot->torsoItem->rotation()  * PI/180.0);
     double Link1x = LINK1*cos(robot->torsoItem->rotation()  * PI/180.0);
@@ -220,11 +171,9 @@ void MainWindow::on_pushButton_8_clicked()
     robot->torsoItem3->setRotation(theta3);
    // scene->
     cout<<"theta1: "<<theta1<<"theta2: "<<theta2<<"theta3: "<<theta3<<endl;
+
 }
-
-
-void MainWindow::on_pushButton_9_clicked()
-{
+void MainWindow::plus_x(){
     double Link1y = LINK1*sin(robot->torsoItem->rotation()  * PI/180.0);
     double Link1x = LINK1*cos(robot->torsoItem->rotation()  * PI/180.0);
     cout<<"Link1y: "<<Link1y<<"Lin1x: "<<Link1x <<endl;
@@ -264,11 +213,8 @@ void MainWindow::on_pushButton_9_clicked()
     robot->torsoItem2->setRotation(theta2);
     robot->torsoItem3->setRotation(theta3);
     cout<<"theta1: "<<theta1<<"theta2: "<<theta2<<"theta3: "<<theta3<<endl;
-
 }
-
-void MainWindow::on_pushButton_11_clicked()
-{
+void MainWindow::minus_y(){
     double Link1y = LINK1*sin(robot->torsoItem->rotation()  * PI/180.0);
     double Link1x = LINK1*cos(robot->torsoItem->rotation()  * PI/180.0);
     cout<<"Link1y: "<<Link1y<<"Lin1x: "<<Link1x <<endl;
@@ -309,9 +255,7 @@ void MainWindow::on_pushButton_11_clicked()
     robot->torsoItem3->setRotation(theta3);
     cout<<"theta1: "<<theta1<<"theta2: "<<theta2<<"theta3: "<<theta3<<endl;
 }
-
-void MainWindow::on_pushButton_10_clicked()
-{
+void MainWindow::plus_y(){
     double Link1y = LINK1*sin(robot->torsoItem->rotation()  * PI/180.0);
     double Link1x = LINK1*cos(robot->torsoItem->rotation()  * PI/180.0);
     cout<<"Link1y: "<<Link1y<<"Lin1x: "<<Link1x <<endl;
@@ -351,18 +295,229 @@ void MainWindow::on_pushButton_10_clicked()
     robot->torsoItem2->setRotation(theta2);
     robot->torsoItem3->setRotation(theta3);
     cout<<"theta1: "<<theta1<<"theta2: "<<theta2<<"theta3: "<<theta3<<endl;
+}
 
+void MainWindow::drop_circle(){
+    const QBrush &brush = QBrush(Qt::SolidPattern);
+    QGraphicsItemGroup *group = new QGraphicsItemGroup(0);
+    QGraphicsItem* parent=robot->Link3;
+
+    //double len = pow((long double)robot->Link3->pos().x(), 2) + pow((long double)robot->Link3->pos().y(), 2);
+    //len = sqrt(len);
+    //int x1= cos(len);
+    //int y1= sin(len);
+    auto pos1x=robot->Link3->pos().x()+40;
+    auto pos1y=robot->Link3->pos().y();
+    QGraphicsEllipseItem* test = new QGraphicsEllipseItem(pos1x,pos1y,10,10,parent);
+    test->setBrush(brush);
+    group->addToGroup(test);
+    scene->addItem(group);
+    //scene->addEllipse(pos1x,pos1y,10,10, pen, brush);
+    ui->graphicsView->setScene(scene);
+}
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+int i = 5;
+
+int clientBool = 0;
+int delayBool = 0;
+
+void MainWindow::paintEvent(QPaintEvent *event)
+{
+    //QPainter painter(this);
+    //painter.setPen(Qt::green);
+    //painter.setBrush(Qt::green);
+   // painter.drawRect(10,10,100,100);
+
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+
+
+    volatile int x = link1_rotate_left();
+    //cout<<"asdfasdfasdf"<<endl;
+    //cout<<"asdfadsfasdfads"<<endl;
+    //asm volatile("" ::: "memory");
+    if(!clientBool)
+    {
+        if(delayBool){
+            QThread::sleep(2);
+        }
+        _ReadWriteBarrier();
+        server->socket->write("1");
+    }
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    link1_rotate_right();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("2");
+    }
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    link2_rotate_left();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("3");
+    }
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    link2_rotate_right();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("4");
+    }
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    link3_rotate_left();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("5");
+    }
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    link3_rotate_right();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("6");
+    }
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    drop_circle();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("7");
+    }
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    minus_x();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("8");
+    }
+}
+
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    plus_x();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("9");
+    }
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+    minus_y();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("10");
+    }
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    plus_y();
+    if(!clientBool){
+        if(delayBool)
+            QThread::sleep(2);
+        server->socket->write("11");
+    }
 }
 
 
 void MainWindow::on_pushButton_12_clicked()
 {
+   server->socket->write("12");
    robot->torsoItem3->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
    robot->torsoItem3->setRotation(90);
 }
 void MainWindow::on_pushButton_13_clicked()
 {
+   server->socket->write("13");
    robot->torsoItem3->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
    robot->torsoItem3->setRotation(90);
 }
 
+void MainWindow::on_checkBox_toggled(bool checked)
+{
+    if(checked) //client
+    {
+        clientBool = 1;
+        /*while(1)
+        {*/
+            client->Connect();
+            client->socket->waitForReadyRead(5000);
+            string message = client->socket->read(5);
+            if(message == "1")
+                link1_rotate_left();
+            else if(message == "2")
+                link1_rotate_right();
+            else if(message == "3")
+                link2_rotate_left();
+            else if(message == "4")
+                link2_rotate_right();
+            else if(message == "5")
+                link3_rotate_left();
+            else if(message == "6")
+                link3_rotate_right();
+            else if(message == "7")
+                drop_circle();
+            else if(message == "8")
+                minus_x();
+            else if(message == "9")
+                plus_x();
+            else if(message == "10")
+                minus_y();
+            else if(message == "11")
+                plus_y();
+
+            client->socket->close();
+       // }
+    }
+    else //server
+    {
+        clientBool = 0;
+    }
+}
+
+void MainWindow::on_checkBox_3_toggled(bool checked)
+{
+    if(checked) //delay
+    {
+        delayBool = 1;
+    }
+    else
+    {
+        delayBool = 0;
+    }
+}

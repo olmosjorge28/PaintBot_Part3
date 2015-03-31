@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QTcpServer>
 #include <QTcpSocket>
+//#include "mainwindow.h"
 
 class MyServer : public QObject
 {
@@ -12,7 +13,10 @@ class MyServer : public QObject
 public:
     explicit MyServer(QObject *parent = 0);
     ~MyServer();
-
+    int read();
+    bool write(char* data);
+    void close();
+    friend class MainWindow;
 signals:
 
 public slots:
@@ -20,6 +24,7 @@ public slots:
 
 private:
     QTcpServer *server;
+    QTcpSocket *socket;
 };
 
 #endif // MYSERVER_H

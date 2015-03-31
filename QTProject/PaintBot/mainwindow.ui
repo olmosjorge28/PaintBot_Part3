@@ -163,8 +163,8 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
+      <x>-60</x>
+      <y>0</y>
       <width>800</width>
       <height>800</height>
      </rect>
@@ -285,6 +285,32 @@
     </property>
     <property name="text">
      <string>Disable World Control Mode</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>570</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Client</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_3">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>570</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delay</string>
     </property>
    </widget>
   </widget>
