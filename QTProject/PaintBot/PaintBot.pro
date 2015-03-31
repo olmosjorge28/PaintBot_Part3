@@ -17,13 +17,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     robot.cpp \
     coloritem.cpp \
-    myserver.cpp \
-    client.cpp
+    myserver.cpp
 
 HEADERS  += mainwindow.h \
     robot.h \
     coloritem.h \
-    myserver.h \
-    client.h
+    myserver.h
 
 FORMS    += mainwindow.ui
